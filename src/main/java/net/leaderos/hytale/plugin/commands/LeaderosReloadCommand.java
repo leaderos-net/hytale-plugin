@@ -13,13 +13,13 @@ public class LeaderosReloadCommand extends CommandBase {
     private final LeaderosPlugin plugin = LeaderosPlugin.get();
 
     public LeaderosReloadCommand() {
-        super("reload", "Reloads the LeaderOS plugin");
+        super("reload", "commands.leaderos.reload");
     }
 
     protected void executeSync(@Nonnull CommandContext ctx) {
         CommandUtil.requirePermission(ctx.sender(), HytalePermissions.fromCommand("leaderos.reload"));
 
-        ctx.sendMessage(Message.raw("LeaderOS plugin reloaded successfully!"));
+        ctx.sendMessage(Message.raw("[LeaderOS] Plugin reloaded successfully!"));
     }
 
 }

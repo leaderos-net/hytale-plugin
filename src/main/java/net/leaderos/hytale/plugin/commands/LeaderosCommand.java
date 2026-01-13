@@ -4,7 +4,7 @@ import com.hypixel.hytale.server.core.command.system.basecommands.AbstractComman
 
 public class LeaderosCommand extends AbstractCommandCollection {
     public LeaderosCommand() {
-        super("leaderos", "LeaderOS main command");
+        super("leaderos", "commands.leaderos.description");
         this.addSubCommand(new LeaderosReloadCommand());
     }
 }
