@@ -19,9 +19,12 @@ import net.leaderos.hytale.plugin.modules.credit.CreditModule;
 import net.leaderos.hytale.plugin.modules.discord.DiscordModule;
 import net.leaderos.hytale.plugin.modules.verify.VerifyModule;
 import net.leaderos.hytale.shared.Shared;
+import net.leaderos.hytale.shared.helpers.Placeholder;
+import net.leaderos.hytale.shared.helpers.PluginUpdater;
 import net.leaderos.hytale.shared.helpers.UrlUtil;
 
 import java.io.File;
+import java.util.concurrent.CompletableFuture;
 
 import javax.annotation.Nonnull;
 
@@ -138,6 +141,18 @@ public class LeaderosPlugin extends JavaPlugin {
     }
 
     private void checkUpdate() {
-        String currentVersion = getInstance().getManifest().getVersion().toString();
+        CompletableFuture.runAsync(() -> {
+            String currentVersion = getInstance().getManifest().getVersion().toString();
+            PluginUpdater updater = new PluginUpdater(currentVersion);
+            try {
+                if (updater.checkForUpdates()) {
+                    String msg = ChatUtil.replacePlaceholders(
+                            getInstance().getLangFile().getMessages().getUpdate(),
+                            new Placeholder("%version%", updater.getLatestVersion())
+                    );
+                    ChatUtil.sendConsoleMessage(msg);
+                }
+            } catch (Exception ignored) {}
+        });
     }
 }
