@@ -6,7 +6,7 @@ The official [LeaderOS](https://www.leaderos.net) plugin for Hytale servers. Thi
 
 [https://www.leaderos.net/plugin/hytale](https://www.leaderos.net/plugin/hytale)
 
-## Wiki 
+## Wiki 
 
 🇺🇸 English: [https://docs.leaderos.net/plugins/hytale/leaderos-plugin](https://docs.leaderos.net/plugins/hytale/leaderos-plugin)
 
