@@ -2,10 +2,8 @@ package net.leaderos.hytale.plugin.modules.credit.commands;
 
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.CommandSender;
-import com.hypixel.hytale.server.core.command.system.CommandUtil;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractAsyncCommand;
 import com.hypixel.hytale.server.core.entity.entities.Player;
-import com.hypixel.hytale.server.core.permissions.HytalePermissions;
 import net.leaderos.hytale.plugin.LeaderosPlugin;
 import net.leaderos.hytale.plugin.helpers.ChatUtil;
 import net.leaderos.hytale.shared.helpers.MoneyUtil;
@@ -39,10 +37,20 @@ public class CreditCommand extends AbstractAsyncCommand {
     }
 
     @Override
+    protected boolean canGeneratePermission() {
+        return false;  // We will handle permissions manually
+    }
+
+    @Override
     @Nonnull
     protected CompletableFuture<Void> executeAsync(@Nonnull CommandContext context) {
         CommandSender sender = context.sender();
-        CommandUtil.requirePermission(sender, HytalePermissions.fromCommand("leaderos.credit.see"));
+
+        // Permission Check
+        if (!sender.hasPermission("leaderos.credit.see")) {
+            ChatUtil.sendMessage(sender, LeaderosPlugin.getInstance().getLangFile().getMessages().getCommand().getNoPerm());
+            return CompletableFuture.completedFuture(null);
+        }
 
         if (!(sender instanceof Player player)) {
             return CompletableFuture.completedFuture(null);

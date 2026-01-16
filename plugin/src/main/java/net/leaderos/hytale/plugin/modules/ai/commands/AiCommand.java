@@ -3,10 +3,8 @@ package net.leaderos.hytale.plugin.modules.ai.commands;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
-import com.hypixel.hytale.server.core.command.system.CommandUtil;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayerCommand;
 import com.hypixel.hytale.server.core.entity.entities.Player;
-import com.hypixel.hytale.server.core.permissions.HytalePermissions;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -25,6 +23,11 @@ public class AiCommand extends AbstractPlayerCommand {
     }
 
     @Override
+    protected boolean canGeneratePermission() {
+        return false;  // We will handle permissions manually
+    }
+
+    @Override
     protected void execute(
             @Nonnull CommandContext context,
             @Nonnull Store<EntityStore> store,
@@ -34,7 +37,12 @@ public class AiCommand extends AbstractPlayerCommand {
     ) {
         Player player = (Player) store.getComponent(ref, Player.getComponentType());
         if (player == null) return;
-        CommandUtil.requirePermission(player, HytalePermissions.fromCommand("leaderos.ai"));
+
+        // Permission Check
+        if (!player.hasPermission("leaderos.ai")) {
+            ChatUtil.sendMessage(player, LeaderosPlugin.getInstance().getLangFile().getMessages().getCommand().getNoPerm());
+            return;
+        }
 
         if (!RequestUtil.canRequest(player.getUuid())) {
             ChatUtil.sendMessage(player, LeaderosPlugin.getInstance().getLangFile().getMessages().getHaveRequestOngoing());

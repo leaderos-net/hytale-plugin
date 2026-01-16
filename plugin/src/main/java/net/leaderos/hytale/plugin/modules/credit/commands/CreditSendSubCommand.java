@@ -2,12 +2,10 @@ package net.leaderos.hytale.plugin.modules.credit.commands;
 
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.CommandSender;
-import com.hypixel.hytale.server.core.command.system.CommandUtil;
 import com.hypixel.hytale.server.core.command.system.arguments.system.RequiredArg;
 import com.hypixel.hytale.server.core.command.system.arguments.types.ArgTypes;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractAsyncCommand;
 import com.hypixel.hytale.server.core.entity.entities.Player;
-import com.hypixel.hytale.server.core.permissions.HytalePermissions;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import net.leaderos.hytale.plugin.LeaderosPlugin;
 import net.leaderos.hytale.plugin.helpers.ChatUtil;
@@ -39,10 +37,20 @@ public class CreditSendSubCommand extends AbstractAsyncCommand {
     }
 
     @Override
+    protected boolean canGeneratePermission() {
+        return false;  // We will handle permissions manually
+    }
+
+    @Override
     @Nonnull
     protected CompletableFuture<Void> executeAsync(@Nonnull CommandContext context) {
         CommandSender sender = context.sender();
-        CommandUtil.requirePermission(sender, HytalePermissions.fromCommand("leaderos.credit.send"));
+
+        // Permission Check
+        if (!sender.hasPermission("leaderos.credit.send")) {
+            ChatUtil.sendMessage(sender, LeaderosPlugin.getInstance().getLangFile().getMessages().getCommand().getNoPerm());
+            return CompletableFuture.completedFuture(null);
+        }
 
         String target = context.get(playerArg);
         Double amount = context.get(amountArg);

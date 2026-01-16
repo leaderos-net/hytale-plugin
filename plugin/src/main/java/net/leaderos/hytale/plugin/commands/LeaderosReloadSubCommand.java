@@ -2,34 +2,48 @@ package net.leaderos.hytale.plugin.commands;
 
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.CommandSender;
-import com.hypixel.hytale.server.core.command.system.CommandUtil;
-import com.hypixel.hytale.server.core.command.system.basecommands.CommandBase;
-import com.hypixel.hytale.server.core.permissions.HytalePermissions;
+import com.hypixel.hytale.server.core.command.system.basecommands.AbstractAsyncCommand;
 import net.leaderos.hytale.plugin.LeaderosPlugin;
 import net.leaderos.hytale.plugin.helpers.ChatUtil;
 import net.leaderos.hytale.shared.Shared;
 import net.leaderos.hytale.shared.helpers.UrlUtil;
 
 import javax.annotation.Nonnull;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ForkJoinPool;
 
-public class LeaderosReloadSubCommand extends CommandBase {
+public class LeaderosReloadSubCommand extends AbstractAsyncCommand {
     public LeaderosReloadSubCommand() {
         super("reload", "Reloads plugin configurations.");
     }
 
-    protected void executeSync(@Nonnull CommandContext context) {
+    @Override
+    protected boolean canGeneratePermission() {
+        return false;  // We will handle permissions manually
+    }
+
+    @Override
+    @Nonnull
+    protected CompletableFuture<Void> executeAsync(@Nonnull CommandContext context) {
         CommandSender sender = context.sender();
-        CommandUtil.requirePermission(sender, HytalePermissions.fromCommand("leaderos.reload"));
 
-        LeaderosPlugin.getInstance().getConfigFile().load(true);
-        LeaderosPlugin.getInstance().getLangFile().load(true);
-        LeaderosPlugin.getInstance().getModulesFile().load(true);
+        // Permission Check
+        if (!sender.hasPermission("leaderos.reload")) {
+            ChatUtil.sendMessage(sender, LeaderosPlugin.getInstance().getLangFile().getMessages().getCommand().getNoPerm());
+            return CompletableFuture.completedFuture(null);
+        }
 
-        Shared.setLink(UrlUtil.format(LeaderosPlugin.getInstance().getConfigFile().getSettings().getUrl()));
-        Shared.setApiKey(LeaderosPlugin.getInstance().getConfigFile().getSettings().getApiKey());
+        return runAsync(context, () -> {
+            LeaderosPlugin.getInstance().getConfigFile().load(true);
+            LeaderosPlugin.getInstance().getLangFile().load(true);
+            LeaderosPlugin.getInstance().getModulesFile().load(true);
 
-        LeaderosPlugin.getInstance().getModuleManager().reloadModules();
-        ChatUtil.sendMessage(sender, LeaderosPlugin.getInstance().getLangFile().getMessages().getReload());
+            Shared.setLink(UrlUtil.format(LeaderosPlugin.getInstance().getConfigFile().getSettings().getUrl()));
+            Shared.setApiKey(LeaderosPlugin.getInstance().getConfigFile().getSettings().getApiKey());
+
+            LeaderosPlugin.getInstance().getModuleManager().reloadModules();
+            ChatUtil.sendMessage(sender, LeaderosPlugin.getInstance().getLangFile().getMessages().getReload());
+        }, ForkJoinPool.commonPool());
     }
 
 }

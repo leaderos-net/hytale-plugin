@@ -1,7 +1,7 @@
 {
   "Group": "LeaderOS",
   "Name": "LeaderOS-Hytale",
-  "Version": "1.0.0",
+  "Version": "${shared.version}",
   "Website": "https://leaderos.net",
   "Main": "net.leaderos.hytale.plugin.LeaderosPlugin",
   "Description": "The official LeaderOS plugin for Hytale servers.",

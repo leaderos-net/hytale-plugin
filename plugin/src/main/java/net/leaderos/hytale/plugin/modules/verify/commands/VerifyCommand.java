@@ -2,12 +2,10 @@ package net.leaderos.hytale.plugin.modules.verify.commands;
 
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.CommandSender;
-import com.hypixel.hytale.server.core.command.system.CommandUtil;
 import com.hypixel.hytale.server.core.command.system.arguments.system.RequiredArg;
 import com.hypixel.hytale.server.core.command.system.arguments.types.ArgTypes;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractAsyncCommand;
 import com.hypixel.hytale.server.core.entity.entities.Player;
-import com.hypixel.hytale.server.core.permissions.HytalePermissions;
 import net.leaderos.hytale.plugin.LeaderosPlugin;
 import net.leaderos.hytale.plugin.helpers.ChatUtil;
 import net.leaderos.hytale.shared.helpers.RequestUtil;
@@ -36,6 +34,11 @@ public class VerifyCommand extends AbstractAsyncCommand {
         codeArg = withRequiredArg("code", "Verify Code", ArgTypes.STRING);
     }
 
+    @Override
+    protected boolean canGeneratePermission() {
+        return false;  // We will handle permissions manually
+    }
+
     /**
      * Executes command method
      */
@@ -44,7 +47,12 @@ public class VerifyCommand extends AbstractAsyncCommand {
     protected CompletableFuture<Void> executeAsync(@Nonnull CommandContext context) {
         String code = context.get(codeArg);
         CommandSender sender = context.sender();
-        CommandUtil.requirePermission(sender, HytalePermissions.fromCommand("leaderos.verify"));
+
+        // Permission Check
+        if (!sender.hasPermission("leaderos.verify")) {
+            ChatUtil.sendMessage(sender, LeaderosPlugin.getInstance().getLangFile().getMessages().getCommand().getNoPerm());
+            return CompletableFuture.completedFuture(null);
+        }
 
         if (!(sender instanceof Player player)) {
             return CompletableFuture.completedFuture(null);

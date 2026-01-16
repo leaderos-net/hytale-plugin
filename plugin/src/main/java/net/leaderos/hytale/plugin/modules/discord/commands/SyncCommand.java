@@ -1,10 +1,8 @@
 package net.leaderos.hytale.plugin.modules.discord.commands;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.CommandSender;
-import com.hypixel.hytale.server.core.command.system.CommandUtil;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractAsyncCommand;
 import com.hypixel.hytale.server.core.entity.entities.Player;
-import com.hypixel.hytale.server.core.permissions.HytalePermissions;
 import net.leaderos.hytale.plugin.LeaderosPlugin;
 import net.leaderos.hytale.plugin.helpers.ChatUtil;
 import net.leaderos.hytale.shared.Shared;
@@ -25,6 +23,11 @@ public class SyncCommand extends AbstractAsyncCommand {
         addAliases("discord-link");
     }
 
+    @Override
+    protected boolean canGeneratePermission() {
+        return false;  // We will handle permissions manually
+    }
+
     /**
      * Executes command method
      */
@@ -32,7 +35,12 @@ public class SyncCommand extends AbstractAsyncCommand {
     @Nonnull
     protected CompletableFuture<Void> executeAsync(@Nonnull CommandContext context) {
         CommandSender sender = context.sender();
-        CommandUtil.requirePermission(sender, HytalePermissions.fromCommand("leaderos.discord.sync"));
+
+        // Permission Check
+        if (!sender.hasPermission("leaderos.discord.sync")) {
+            ChatUtil.sendMessage(sender, LeaderosPlugin.getInstance().getLangFile().getMessages().getCommand().getNoPerm());
+            return CompletableFuture.completedFuture(null);
+        }
 
         if (!(sender instanceof Player player)) {
             ChatUtil.sendMessage(sender, "This command can only be used by players.");

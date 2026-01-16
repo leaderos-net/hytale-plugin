@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>leaderos-plugin</artifactId>
-    <version>1.0.0</version>
+    <version>${shared.version}</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -18,6 +18,15 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
 
     <dependencies>
         <!-- LeaderOS Shared -->
