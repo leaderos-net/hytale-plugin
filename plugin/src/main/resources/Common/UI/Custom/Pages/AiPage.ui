@@ -1,0 +1,76 @@
+$C = "../Common.ui";
+
+@PrimaryButtonStyle = TextButtonStyle(
+  Default: (Background: #4577a8, LabelStyle: (FontSize: 14, TextColor: #becdd5, RenderBold: true, HorizontalAlignment: Center, VerticalAlignment: Center)),
+  Hovered: (Background: #345fa0, LabelStyle: (FontSize: 14, TextColor: #becdd5, RenderBold: true, HorizontalAlignment: Center, VerticalAlignment: Center)),
+  Pressed: (Background: #2f74b6, LabelStyle: (FontSize: 14, TextColor: #becdd5, RenderBold: true, HorizontalAlignment: Center, VerticalAlignment: Center))
+);
+
+@CloseButtonStyle = TextButtonStyle(
+  Default: (Background: #21344b, LabelStyle: (FontSize: 14, TextColor: #becdd5, RenderBold: true, HorizontalAlignment: Center, VerticalAlignment: Center)),
+  Hovered: (Background: #18283c, LabelStyle: (FontSize: 14, TextColor: #becdd5, RenderBold: true, HorizontalAlignment: Center, VerticalAlignment: Center)),
+  Pressed: (Background: #253f60, LabelStyle: (FontSize: 14, TextColor: #becdd5, RenderBold: true, HorizontalAlignment: Center, VerticalAlignment: Center))
+);
+
+Group {
+  Anchor: (Width: 500, Height: 225);
+  Background: #141c26(0.98);
+  LayoutMode: Top;
+  Padding: (Full: 20);
+
+  Label {
+    Text: "Ask the AI";
+    Anchor: (Height: 45);
+    Style: (
+      FontSize: 26,
+      TextColor: #becdd5,
+      HorizontalAlignment: Center,
+      RenderBold: true
+    );
+  }
+
+  Group {
+    Anchor: (Height: 1);
+    Background: #2b3542;
+  }
+
+  Group { Anchor: (Height: 16); }
+
+  Group {
+    LayoutMode: Left;
+
+    Label {
+      Text: "Question";
+      Style: (FontSize: 14, TextColor: #637384, VerticalAlignment: Center);
+    }
+  }
+
+  Group { Anchor: (Height: 6); }
+
+  Group {
+      LayoutMode: Left;
+
+      $C.@TextField #PromptInput {
+        FlexWeight: 1;
+        PlaceholderText: "Enter your question...";
+      }
+    }
+
+  Group {
+    Anchor: (Height: 1);
+    Background: #2b3542(0.5);
+  }
+
+  Group { FlexWeight: 1; }
+
+  Group {
+    LayoutMode: Center;
+    Anchor: (Height: 44);
+
+    TextButton #AskButton {
+      Text: "ASK";
+      Anchor: (Width: 460, Height: 40);
+      Style: @PrimaryButtonStyle;
+    }
+  }
+}
